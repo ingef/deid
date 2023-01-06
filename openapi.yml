@@ -4,9 +4,15 @@ info:
   version: '1.0'
 servers:
   - url: https://api.server.test/v1
+security:
+  - ApiKeyAuth: []
+
+
 paths:
   /job:
     post:
+      tags:
+        - jobs
       requestBody:
         content:
           application/json:
@@ -21,10 +27,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Job'
-
+    get:
+      tags:
+        - jobs
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: "Page index to display (starting at 1)"
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: "Jobs to display per page"
+      responses:
+        '200':
+          description: List existing Jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Job'
         
   /job/{jobId}:
     get:
+      tags:
+        - jobs
       parameters:
         - name: jobId
           in: path
@@ -41,6 +74,8 @@ paths:
                 $ref: '#/components/schemas/Job'
   /job/{jobId}/task/{taskId}/assets/{assetId}:
       get:
+        tags:
+          - jobs
         parameters:
           - name: jobId
             in: path
@@ -87,6 +122,11 @@ paths:
                   type: string
 
 components:
+  securitySchemes:
+      ApiKeyAuth:        # arbitrary name for the security scheme
+        type: apiKey
+        in: header       # can be "header", "query" or "cookie"
+        name: X-DEID-API-KEY
   schemas:
     Job:
       type: object

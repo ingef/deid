@@ -2,7 +2,7 @@ package de.ingef.deid.service;
 
 import java.util.UUID;
 
-public interface DeidentificationEvent {
+public interface DeidentificationStartEvent {
 
 	UUID getJobId();
 }

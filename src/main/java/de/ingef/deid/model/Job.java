@@ -1,5 +1,6 @@
 package de.ingef.deid.model;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -8,16 +9,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Job {
 
@@ -33,6 +34,10 @@ public class Job {
 	@JsonManagedReference
 	@OneToOne(cascade = CascadeType.ALL)
 	private DeidentificationMethod deidentificationMethod;
+
+	@OneToMany
+	@Cascade(org.hibernate.annotations.CascadeType.ALL)
+	private List<Task> tasks;
 
 	public Job(String name) {
 		this.name = name;

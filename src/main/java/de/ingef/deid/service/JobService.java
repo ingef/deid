@@ -6,9 +6,12 @@ import de.ingef.deid.repository.JobRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+/**
+ * Service for handling incoming job related requests: Creation, Listing, Status.
+ */
+@Service
 @Slf4j
 public class JobService {
 

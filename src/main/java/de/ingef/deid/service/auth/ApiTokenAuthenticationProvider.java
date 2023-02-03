@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * Placeholder for an API Authentication (e.g. Hashicorp Vault).
+ * TODO Placeholder for an API Authentication (e.g. Hashicorp Vault).
  *
  * This provider uses static API-tokens (like BasicAuth with {@code username:password}) which are preshared and are not secured in any way.
  *

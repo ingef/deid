@@ -6,6 +6,8 @@ import de.ingef.deid.model.Job;
 import de.ingef.deid.model.JobState;
 import de.ingef.deid.repository.JobRepository;
 import de.ingef.deid.service.DeidentificationCompleteEvent;
+import de.ingef.deid.service.conquery.FrontendConfigService;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,6 +24,14 @@ public class MostlyAiService {
 
 	@Autowired
 	private JobRepository jobRepository;
+
+	@Autowired
+	private FrontendConfigService frontendConfigService;
+
+	@PostConstruct
+	public void init() {
+		frontendConfigService.registerStaticConfig("static/conquery/mostly_ai_form.frontend_conf.json");
+	}
 
 	@EventListener
 	public void handleDeidentificationEvent(MostlyAISythetizationStartEvent event) {

@@ -8,6 +8,7 @@ import de.ingef.deid.properties.SecurityProperties;
 import de.ingef.deid.service.auth.ApiTokenAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,6 +29,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @Configuration
+@ConditionalOnProperty(
+		value = "dev",
+		havingValue = "false",
+		matchIfMissing = true
+)
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -66,7 +72,7 @@ public class SecurityConfig {
 		// TODO clean this up
 		RestTemplate restTemplate = new RestTemplate();
 		final ResponseEntity<Map<String, ?>>
-				forObject = restTemplate.exchange(securityProperties.getWellKnownEndpoint(), HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<Map<String,?>>() {});
+				forObject = restTemplate.exchange(securityProperties.getWellKnownEndpoint(), HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {});
 
 		if(!forObject.getStatusCode().is2xxSuccessful()) {
 			throw new IllegalStateException("Cannot retrieve wellKnown information");
@@ -78,6 +84,7 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		http
 				.cors().
 				and()
@@ -92,11 +99,9 @@ public class SecurityConfig {
 				// Never create or use a session
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.oauth2ResourceServer(s -> {
-					s.opaqueToken(t -> //TODO configure
-										  t.introspectionUri(tokenIntrospectionUrl())//"http://auth.lyo-peva02/realms/Ingef/protocol/openid-connect/token/introspect")
-										   .introspectionClientCredentials(securityProperties.getClientId(), securityProperties.getClientSecret()));
-				} );
+				.oauth2ResourceServer(s -> s.opaqueToken(t -> //TODO configure
+									  t.introspectionUri(tokenIntrospectionUrl())
+									   .introspectionClientCredentials(securityProperties.getClientId(), securityProperties.getClientSecret())));
 		return http.build();
 	}
 }
